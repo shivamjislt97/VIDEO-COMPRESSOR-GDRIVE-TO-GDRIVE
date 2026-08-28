@@ -45,7 +45,9 @@ def commit_and_push_records(records):
 
     subprocess.run(['git', 'config', 'user.name', 'Masterslt97'], capture_output=True)
     subprocess.run(['git', 'config', 'user.email', 'masterslt97@users.noreply.github.com'], capture_output=True)
+    subprocess.run(['git', 'stash'], capture_output=True)
     subprocess.run(['git', 'pull', '--rebase', 'origin', 'main'], capture_output=True)
+    subprocess.run(['git', 'stash', 'pop'], capture_output=True)
     subprocess.run(['git', 'add', RECORDS_FILE], capture_output=True)
     r = subprocess.run(
         ['git', 'commit', '-m', f'[skip ci] records: {uploaded} uploaded, {failed} failed, {len(records)} total'],
@@ -87,14 +89,25 @@ def download_video(file_id, url=None):
 
 def compress_video(inp, out):
     log('🎬 Compressing with FFmpeg (H.265 CRF 28, slow preset)...')
-    subprocess.run(
-        ['ffmpeg', '-i', inp,
-         '-c:v', 'libx265', '-crf', '28', '-preset', 'slow',
-         '-tag:v', 'hvc1',
-         '-c:a', 'aac', '-b:a', '128k',
-         '-y', out],
-        check=True
-    )
+    try:
+        subprocess.run(
+            ['ffmpeg', '-i', inp,
+             '-c:v', 'libx265', '-crf', '28', '-preset', 'slow',
+             '-tag:v', 'hvc1',
+             '-c:a', 'aac', '-b:a', '128k',
+             '-y', out],
+            check=True
+        )
+    except subprocess.CalledProcessError:
+        log('⚠️ AAC re-encode failed, falling back to audio copy...')
+        subprocess.run(
+            ['ffmpeg', '-i', inp,
+             '-c:v', 'libx265', '-crf', '28', '-preset', 'slow',
+             '-tag:v', 'hvc1',
+             '-c:a', 'copy',
+             '-y', out],
+            check=True
+        )
 
 def upload_to_gdrive(local_path, remote_folder):
     log('⬆️ Uploading to GDrive (rclone)...')
