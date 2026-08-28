@@ -86,11 +86,13 @@ def download_video(file_id, url=None):
     return os.path.join('downloads', files[0])
 
 def compress_video(inp, out):
-    log('🎬 Compressing with FFmpeg (H.264 CRF 18)...')
+    log('🎬 Compressing with FFmpeg (H.265 CRF 28, slow preset)...')
     subprocess.run(
         ['ffmpeg', '-i', inp,
-         '-c:v', 'libx264', '-crf', '18', '-preset', 'medium',
-         '-c:a', 'copy', '-y', out],
+         '-c:v', 'libx265', '-crf', '28', '-preset', 'slow',
+         '-tag:v', 'hvc1',
+         '-c:a', 'aac', '-b:a', '128k',
+         '-y', out],
         check=True
     )
 
