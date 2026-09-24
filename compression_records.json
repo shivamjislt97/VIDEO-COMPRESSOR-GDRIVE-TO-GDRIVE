@@ -1,0 +1,10 @@
+[
+  {
+    "video_name": "view?usp=drivesdk",
+    "gdrive_link": "https://drive.google.com/file/d/1LPu7FT5myokTc-CSo-9qvGPaZSkSsHSI/view?usp=drivesdk",
+    "folder": "My Videos",
+    "status": "failed",
+    "error": "Command '['gdown', 'https://drive.google.com/file/d/1LPu7FT5myokTc-CSo-9qvGPaZSkSsHSI/view?usp=drivesdk', '-O', './downloads/', '--fuzzy', '--remaining-ok']' returned non-zero exit status 2.",
+    "timestamp": "2026-09-24T07:44:56.464019+00:00"
+  }
+]
